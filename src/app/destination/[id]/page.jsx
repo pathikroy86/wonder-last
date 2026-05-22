@@ -1,3 +1,6 @@
+import EditDestination from "@/components/EditDestination";
+import { PencilToLine, TrashBin } from "@gravity-ui/icons";
+import { Button } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,6 +22,10 @@ const DestinationDetailsPage = async ({ params }) => {
 
     return (
         <div className="max-w-7xl mx-auto py-12 px-4">
+            <div className="my-5 flex gap-3 justify-end">
+                <EditDestination data={data}></EditDestination>
+                <Button variant="danger-soft"><TrashBin /> Delete</Button>
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
                     <div className="rounded-lg overflow-hidden">
