@@ -16,7 +16,7 @@ const Navbar = () => {
                     <Link href={'/bookings'}>My Bookings</Link>
                 </li>
                 <li>
-                    <Link href={'/admin'}>Admin</Link>
+                    <Link href={'/addpackage'}>Add Package</Link>
                 </li>
             </ul>
             <Link href={'/'}>
