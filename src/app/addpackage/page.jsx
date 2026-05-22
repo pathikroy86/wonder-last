@@ -15,7 +15,6 @@ const PackageAddPage = () => {
             body: JSON.stringify(destination)
         })
         const data = await res.json();
-        console.log(data)
     }
     return (
         <div className="mx-auto">

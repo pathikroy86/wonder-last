@@ -1,6 +1,5 @@
+import { DeleteDialogue } from "@/components/DeleteDialogue";
 import EditDestination from "@/components/EditDestination";
-import { PencilToLine, TrashBin } from "@gravity-ui/icons";
-import { Button } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,7 +7,6 @@ const DestinationDetailsPage = async ({ params }) => {
     const { id } = await params;
     const res = await fetch(`http://localhost:8000/destination/${id}`);
     const data = await res.json();
-    console.log(data)
 
     const {
         destinationName,
@@ -24,7 +22,7 @@ const DestinationDetailsPage = async ({ params }) => {
         <div className="max-w-7xl mx-auto py-12 px-4">
             <div className="my-5 flex gap-3 justify-end">
                 <EditDestination data={data}></EditDestination>
-                <Button variant="danger-soft"><TrashBin /> Delete</Button>
+                <DeleteDialogue data={data}></DeleteDialogue>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
