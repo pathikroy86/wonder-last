@@ -1,9 +1,11 @@
 "use client"
 import { Check } from "@gravity-ui/icons";
-import { Button, Card, CardHeader, Description, FieldError, Form, Input, Label, TextField } from "@heroui/react";
+import { FcGoogle } from "react-icons/fc";
+import { Button, Card, CardHeader, Description, FieldError, Form, Input, Label, Separator, TextField } from "@heroui/react";
 import Link from "next/link";
 import { authClient } from "../../lib/auth-client";
 import { toast } from "react-toastify";
+import { redirect } from "next/navigation";
 
 const SigninPage = () => {
     const onSubmit = async (e) => {
@@ -17,9 +19,37 @@ const SigninPage = () => {
         })
         if (data) {
             toast.success("Successfully logged In.")
+            console.log(data)
+            redirect('/');
         }
         if (error) {
             toast.error(error)
+        }
+    }
+
+    const handleGoogleSignin = async () => {
+        try {
+            const result = await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/",
+            })
+
+            if (result?.error) {
+                if (result.error.code === "account_not_linked") {
+                    toast.warning("This email is linked to a password account. Please sign in with your password first.");
+                    return;
+                }
+                toast.error(result.error.message || "Google sign-in failed");
+                return;
+            }
+
+            if (result?.data) {
+                toast.success("Successfully signed in!");
+                redirect('/');
+            }
+        } catch (err) {
+            console.error("Google signin error:", err);
+            toast.error("An unexpected error occurred");
         }
     }
     return (
@@ -80,6 +110,14 @@ const SigninPage = () => {
 
                     </div>
                 </Form>
+                <div className="flex justify-center items-center gap-3">
+                    <Separator />
+                    <div className="whitespace-nowrap">Or sign in with</div>
+                    <Separator />
+                </div>
+                <Button fullWidth variant="outline" className="rounded" onClick={handleGoogleSignin}>
+                    <FcGoogle /> Google
+                </Button>
             </Card>
         </div>
 

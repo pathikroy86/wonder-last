@@ -1,5 +1,6 @@
 
 import { ArrowUpRight, Calendar, MapPin } from "@gravity-ui/icons";
+import { DateField, Description, Label } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 

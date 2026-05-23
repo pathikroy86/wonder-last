@@ -1,9 +1,11 @@
 "use client"
 import { Check } from "@gravity-ui/icons";
-import { Button, Card, CardHeader, Description, FieldError, Form, Input, Label, TextField } from "@heroui/react";
+import { FcGoogle } from "react-icons/fc";
+import { Button, Card, CardHeader, Description, FieldError, Form, Input, Label, Separator, TextField } from "@heroui/react";
 import Link from "next/link";
 import { authClient } from "../../lib/auth-client";
 import { redirect } from "next/navigation";
+import { toast } from "react-toastify";
 
 const SignupPage = () => {
     const onSubmit = async (e) => {
@@ -23,6 +25,33 @@ const SignupPage = () => {
         }
         if (error) {
             toast.error(error)
+        }
+    }
+
+    const handleGoogleSignup = async () => {
+        try {
+            const result = await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/",
+            })
+
+            if (result?.error) {
+                if (result.error.code === "account_not_linked") {
+                    toast.info("Account already exists. Redirecting to sign in...");
+                    setTimeout(() => redirect('/signin'), 1500);
+                    return;
+                }
+                toast.error(result.error.message || "Google sign-up failed");
+                return;
+            }
+
+            if (result?.data) {
+                toast.success("Successfully signed up!");
+                redirect('/');
+            }
+        } catch (err) {
+            console.error("Google signup error:", err);
+            toast.error("An unexpected error occurred");
         }
     }
     return (
@@ -79,7 +108,7 @@ const SignupPage = () => {
                         <FieldError />
                     </TextField>
                     <div className="flex flex-col gap-5">
-                        <Button fullWidth type="submit" className="rounded">
+                        <Button fullWidth type="submit" className="rounded bg-cyan-500">
                             <Check />
                             Register
                         </Button>
@@ -90,6 +119,14 @@ const SignupPage = () => {
                         </Link>
                     </div>
                 </Form>
+                <div className="flex justify-center items-center gap-3">
+                    <Separator />
+                    <div className="whitespace-nowrap">Or Sign up with</div>
+                    <Separator />
+                </div>
+                <Button fullWidth variant="outline" className="rounded" onClick={handleGoogleSignup}>
+                    <FcGoogle /> Google
+                </Button>
             </Card>
         </div>
 

@@ -1,9 +1,13 @@
+
+import Booking from "@/components/Booking";
 import { DeleteDialogue } from "@/components/DeleteDialogue";
 import EditDestination from "@/components/EditDestination";
+import { DateField, Description, Label } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
 
 const DestinationDetailsPage = async ({ params }) => {
+    "use server"
     const { id } = await params;
     const res = await fetch(`http://localhost:8000/destination/${id}`);
     const data = await res.json();
@@ -48,30 +52,8 @@ const DestinationDetailsPage = async ({ params }) => {
                     </div>
                 </div>
 
-                <aside className="bg-white shadow rounded-lg p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-gray-500">Price</p>
-                            <p className="text-2xl font-bold">${price} <span className="text-base font-medium">/Person</span></p>
-                        </div>
-                    </div>
-
-                    <div className="mt-6">
-                        <Link href={`/destination/${id}/book`}>
-                            <button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3 rounded-md font-semibold">
-                                Book Now
-                            </button>
-                        </Link>
-                        <Link href={`/destination`}>
-                            <button className="w-full mt-3 border border-gray-200 text-gray-700 py-2 rounded-md">
-                                Back to listings
-                            </button>
-                        </Link>
-                    </div>
-
-                    <div className="mt-4 text-xs text-gray-500">
-                        Free cancellation within 24 hours when available.
-                    </div>
+                <aside>
+                    <Booking data={data}></Booking>
                 </aside>
             </div>
         </div>
