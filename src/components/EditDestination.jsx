@@ -1,4 +1,5 @@
 "use client"
+import { authClient } from "@/lib/auth-client";
 import { Envelope, PencilToLine } from "@gravity-ui/icons";
 import { Button, FieldError, Input, Label, Modal, Surface, TextField, Select, ListBox, TextArea } from "@heroui/react";
 
@@ -7,10 +8,12 @@ const EditDestination = ({ data }) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const updatedData = Object.fromEntries(formData.entries());
+        const { data: tokenData } = await authClient.token();
         const res = await fetch(`http://localhost:8000/destination/${_id}`, {
             method: 'PATCH',
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
+                authorization: `Bearer ${tokenData.token}`
             },
             body: JSON.stringify(updatedData)
         })

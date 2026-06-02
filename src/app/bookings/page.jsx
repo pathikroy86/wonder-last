@@ -1,5 +1,6 @@
 import { CancelConfirmation } from "@/components/CancelConfirmation";
 import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 import { headers } from "next/headers";
 import Image from "next/image";
 
@@ -7,12 +8,9 @@ const MyBookingsPage = async () => {
     const session = await auth.api.getSession({
         headers: await headers() // you need to pass the headers object.
     })
+
     const user = session?.user;
-    const res = await fetch(`http://localhost:8000/booking/${user.id}`, {
-        headers: {
-            authorization: "logged in"
-        }
-    });
+    const res = await fetch(`http://localhost:8000/booking/${user.id}`);
     const bookings = await res.json();
 
     return (
