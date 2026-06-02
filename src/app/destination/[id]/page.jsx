@@ -2,15 +2,30 @@
 import Booking from "@/components/Booking";
 import { DeleteDialogue } from "@/components/DeleteDialogue";
 import EditDestination from "@/components/EditDestination";
-import { DateField, Description, Label } from "@heroui/react";
 import Image from "next/image";
-import Link from "next/link";
 
 const DestinationDetailsPage = async ({ params }) => {
     "use server"
     const { id } = await params;
     const res = await fetch(`http://localhost:8000/destination/${id}`);
+
+    if (!res.ok) {
+        return (
+            <div className="max-w-7xl mx-auto py-12 px-4 text-red-600">
+                Destination not found.
+            </div>
+        );
+    }
+
     const data = await res.json();
+
+    if (!data) {
+        return (
+            <div className="max-w-7xl mx-auto py-12 px-4 text-red-600">
+                Destination data is unavailable.
+            </div>
+        );
+    }
 
     const {
         destinationName,

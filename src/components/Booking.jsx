@@ -2,14 +2,54 @@
 import { authClient } from '@/lib/auth-client';
 import { DateField, Description, Label } from '@heroui/react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const Booking = ({ data }) => {
     const { data: session } = authClient.useSession();
     const user = session?.user;
+    const [departureDate, setDepartureDate] = useState(null)
 
-    const { departureDate, setDepartureDate } = useState(null)
-    console.log(departureDate)
+    if (!data) {
+        return <div className="p-6 bg-white shadow rounded-lg">Booking information is unavailable.</div>;
+    }
+
+    if (!user) {
+        return (
+            <div className="p-6 bg-white shadow rounded-lg">
+                <p className="text-sm text-gray-600 mb-4">Please sign in to book this destination.</p>
+                <Link href="/signin" className="w-full inline-flex justify-center bg-cyan-500 hover:bg-cyan-600 text-white py-3 rounded-md font-semibold">
+                    Sign in to book
+                </Link>
+            </div>
+        );
+    }
+
+    const { _id, destinationName, imageUrl, price, country } = data;
+    console.log(user)
+    const handleBookingInfo = async () => {
+        const bookingData = {
+            userId: user.id,
+            userImage: user.image,
+            userName: user.name,
+            destinationId: _id,
+            destinationName,
+            price,
+            imageUrl,
+            country,
+            departureDate: departureDate ? new Date(departureDate) : null,
+        }
+        const res = await fetch('http://localhost:8000/booking', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(bookingData)
+        })
+        const data = await res.json();
+        toast.success("Booking successful");
+    }
     return (
         <div className="bg-white shadow rounded-lg p-6">
             <div className="flex items-center justify-between">
@@ -27,8 +67,8 @@ const Booking = ({ data }) => {
             </DateField>
 
             <div className="mt-6">
-                <Link href={`/destination/${data.id}/book`}>
-                    <button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3 rounded-md font-semibold">
+                <Link href={`/destination/${data._id}`}>
+                    <button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3 rounded-md font-semibold" onClick={handleBookingInfo}>
                         Book Now
                     </button>
                 </Link>
